@@ -5,6 +5,7 @@ from .Date_Time import Date_Time
 from .Person import Person
 from random import randint, choice, sample
 from datetime import datetime
+from PIL import Image, ImageDraw, ImageFont
 
 
 __title__ = 'randominfo'
@@ -109,6 +110,27 @@ def get_phone_number(country_code = True):
         else:
             phone += str(randint(0,9))
     return phone
+
+def get_profile_img(char = None, bgColor = None, filePath = None, imgName = None):
+	if char != None:
+		if bgColor == None:
+			colors = ['red', 'green', 'royalblue', 'violet', 'pink', 'indigo', 'grey', 'yellowgreen']
+			bgColor = choice(colors)
+		img = Image.new('RGB', (512, 512), color = bgColor)
+		d = ImageDraw.Draw(img)
+		font = ImageFont.truetype("Candara.ttf", 280)
+		d.text((170,140), char, fill=(255,255,255), font = font)
+		if filePath == None:
+			filePath = os.path.dirname(os.path.abspath(__file__))
+		else:
+			if not os.path.exists(filePath):
+				raise OSError
+		
+		if imgName == None:
+			imgName = char + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+		img.save(str(filePath) + "_" + str(imgName) + '.png')
+	else:
+		pass
 
 '''
 REFERENCE:
