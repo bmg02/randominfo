@@ -7,6 +7,40 @@ full_path = lambda filename: abspath(join(dirname(__file__), filename))
 
 class Person:
 	def __init__(self, gender = None, country = None):
+		'''
+		#Comments start here
+		firstNameFile = csv.reader(open(full_path('first-names.csv'), 'r'))
+		lastNameFile = csv.reader(open(full_path('last-names.csv'), 'r'))
+		filteredData = []
+		if self.gender == None:
+			for data in firstNameFile:
+				filteredData.append(data)
+		else:
+			if self.gender.lower() == "male":
+				for data in firstNameFile:
+					if(data[2] == "male"):
+						filteredData.append(data)
+			elif self.gender.lower() == "female":
+				for data in firstNameFile:
+					if(data[2] == "female"):
+						filteredData.append(data)
+			else:
+				raise ValueError("Only 'male' and 'female' are supported as gender.")
+		
+		choosen = random.choice(filteredData)
+		self.first_name = choosen[0]
+		self.gender = choosen[2]
+		self.country = choosen[1]
+		
+		for data in lastNameFile:
+			filteredData.append(data)
+		self.last_name = random.choice(filteredData)[0]
+
+		self.full_name = self.first_name + " " + self.last_name
+		self.full_name = self.full_name.strip()
+		#Comments ends here
+		'''
+
 		self.first_name = getFName()
 		self.last_name = getLName()
 		self.full_name = self.first_name + " " + self.last_name

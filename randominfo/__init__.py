@@ -1,11 +1,10 @@
 from __future__ import unicode_literals
-import sys, glob, csv
+import sys, glob, csv, pytz
 from os import listdir
 from os.path import abspath, join, dirname, split, exists
 sys.path.append("/randominfo/")
-from .Date_Time import Date_Time
-from .Person import Person
-from random import randint, choice, sample
+#from .Person import Person
+from random import randint, choice, sample, randrange
 from datetime import datetime
 from PIL import Image, ImageDraw, ImageFont
 
@@ -14,16 +13,6 @@ __title__ = 'randominfo'
 __version__ = '0.1'
 __author__ = 'Bhuvan Gandhi'
 __license__ = 'MIT'
-
-try:
-    pass
-except Exception as e:
-    exc_type, exc_obj, exc_tb = sys.exc_info()
-    fileName = split(exc_tb.tb_frame.f_code.co_filename)[1]
-    if exc_type == TypeError:
-        print(fileName + ": " + "Invalid argument list. - line-" + str(exc_tb.tb_lineno))
-    else:
-        print(e)
 
 full_path = lambda filename: abspath(join(dirname(__file__), filename))
 
@@ -90,25 +79,28 @@ def get_otp(len):
 def get_formatted_datetime(strDate, _format = "%d-%m-%Y %H:%M:%S"):
     return datetime.strptime(strDate, _format)
 
-def get_email():
-    domains = ["gmail", "yahoo", "hotmail", "express", "yandex", "nexus", "online", "omega", "institute", "finance", "company", "corporation", "community"]
-    extentions = ['com', 'in', 'jp', 'us', 'uk', 'org', 'edu', 'au', 'de', 'co', 'me', 'biz', 'dev', 'ngo', 'site', 'xyz', 'zero', 'tech']
-    if Person == None:
-        prsn = Person()
-    else:
-        prsn = Person
-
-    c = randint(0,2)
-    dmn = choice(domains)
-    ext = choice(extentions)
-
-    if c == 0:
-        email = prsn.first_name + get_formatted_datetime(prsn.birthdate(), "%Y") + dmn + "." + ext
-    elif c == 1:
-        email = prsn.last_name + get_formatted_datetime(prsn.birthdate(), "%d") + dmn + "." + ext
-    else:
-        email = prsn.first_name + get_formatted_datetime(prsn.birthdate(), "%y") + dmn + "." + ext
-    return email
+def get_email(Person = None):
+	domains = ["gmail", "yahoo", "hotmail", "express", "yandex", "nexus", "online", "omega", "institute", "finance", "company", "corporation", "community"]
+	extentions = ['com', 'in', 'jp', 'us', 'uk', 'org', 'edu', 'au', 'de', 'co', 'me', 'biz', 'dev', 'ngo', 'site', 'xyz', 'zero', 'tech']
+	#email = "qwe@abc.com"
+	#Comments starts here
+	if Person == None:
+		prsn = Person()
+	else:
+		prsn = Person
+	
+	c = randint(0,2)
+	dmn = choice(domains)
+	ext = choice(extentions)
+	
+	if c == 0:
+		email = prsn.first_name + get_formatted_datetime(prsn.birthdate(), "%Y") + dmn + "." + ext
+	elif c == 1:
+		email = prsn.last_name + get_formatted_datetime(prsn.birthdate(), "%d") + dmn + "." + ext
+	else:
+		email = prsn.first_name + get_formatted_datetime(prsn.birthdate(), "%y") + dmn + "." + ext
+	#Comments ends here
+	return email
 
 def random_password(length = 8, special_chars = True, digits = True):
     spec_chars = ['!', '@', '#', '$', '%', '^', '&', '*']
@@ -180,6 +172,96 @@ def get_real_profile_img(gender = None):
 	return imgName
 
 
+class Date_Time:
+	def __init__(self, _format = "%d-%m-%Y %H:%M:%S", startRange = datetime(1970, 1, 1, 0, 0, 0, 0, pytz.UTC), endRange = datetime.today()):
+		self._format = _format
+		self.startRange = startRange
+		self.endRange = endRange
+		startTs = startRange.timestamp()
+		endTs = datetime.timestamp(endRange)
+		self.datetime = datetime.fromtimestamp(randrange(int(startTs), int(endTs)))
+	
+	def set_startRange(self, startRange):
+		self.startRange = startRange
+	
+	def get_startRange(self):
+		return self.startRange
+	
+	def set_endRange(self, endRange):
+		self.endRange = endRange
+	
+	def get_endRange(self, endRange):
+		return self.endRange
+
+	def set_format(self, _format):
+		self._format = _format
+
+	def get_format(self):
+		return self._format
+
+	def get_today(self):
+		return datetime.today().strftime(self._format)
+	
+	def get_date(self, _format = "%d %b, %Y"):
+		return self.datetime.strftime(_format)
+
+	def get_time(self, _format = "%H:%M:%S"):
+		return self.datetime.strftime(_format)
+
+	def get_datetime(self):
+		return self.datetime
+
+	def get_year_diff(self, year = datetime.now().year):
+		return year - self.datetime.year
+
+class Person:
+	def __init__(self, gender = None, country = None):
+		self.first_name = get_first_name()
+		self.last_name = get_last_name()
+		self.full_name = self.first_name + " " + self.last_name
+		dob = Date_Time()
+		self.birthdate = dob.get_date()
+		self.phone = get_phone_number()
+		self.email = get_email()
+		self.gender = gender
+		self.country = country
+		self.paswd = random_password()
+
+	def get_full_name(self):
+		return self.full_name
+
+	def get_first_name(self):
+	    return self.first_name
+
+	def get_last_name(self):
+	    return self.last_name
+	
+	def get_gender(self):
+		return self.gender
+	
+	def get_birthdate(self):
+		return self.birthdate
+	
+	def get_email(self):
+		return self.email
+	
+	def get_password(self):
+		return self.paswd
+	
+	def get_country(self):
+		return self.country
+
+	def get_all(self):
+		return [
+			self.first_name,
+			self.last_name,
+			self.birthdate,
+			self.gender,
+			self.email,
+			self.phone,
+			self.paswd,
+			self.country
+		]
 
 
 '''
