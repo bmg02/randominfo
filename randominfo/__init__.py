@@ -1,9 +1,8 @@
 from __future__ import unicode_literals
 import sys, glob, csv, pytz
-from os import listdir
+from os import listdir, getcwd
 from os.path import abspath, join, dirname, split, exists
 sys.path.append("/randominfo/")
-#from .Person import Person
 from random import randint, choice, sample, randrange
 from datetime import datetime
 from PIL import Image, ImageDraw, ImageFont
@@ -82,8 +81,7 @@ def get_formatted_datetime(strDate, _format = "%d-%m-%Y %H:%M:%S"):
 def get_email(Person = None):
 	domains = ["gmail", "yahoo", "hotmail", "express", "yandex", "nexus", "online", "omega", "institute", "finance", "company", "corporation", "community"]
 	extentions = ['com', 'in', 'jp', 'us', 'uk', 'org', 'edu', 'au', 'de', 'co', 'me', 'biz', 'dev', 'ngo', 'site', 'xyz', 'zero', 'tech']
-	#email = "qwe@abc.com"
-	#Comments starts here
+	
 	if Person == None:
 		prsn = Person()
 	else:
@@ -99,7 +97,7 @@ def get_email(Person = None):
 		email = prsn.last_name + get_formatted_datetime(prsn.birthdate(), "%d") + dmn + "." + ext
 	else:
 		email = prsn.first_name + get_formatted_datetime(prsn.birthdate(), "%y") + dmn + "." + ext
-	#Comments ends here
+	
 	return email
 
 def random_password(length = 8, special_chars = True, digits = True):
@@ -160,72 +158,63 @@ def get_alphabet_profile_img(char, bgColor = None, filePath = None, fileName = N
 		raise ValueError("Specify valid alphabet character in argument.")
 	return imgName
 
-def get_real_profile_img(gender = None):
+def get_face_profile_img(gender = None):
 	if gender == None:
-		imgName = choice(listdir("imgs/"))
+		imgName = choice(glob.glob(getcwd() + "\\randominfo\\images\\people\\*.jpg"))
 	elif gender.lower() == "female":
-		imgName = choice(glob.glob("images/people/female_*.jpg"))
+		imgName = choice(glob.glob(getcwd() + "\\randominfo\\images\\people\\female_*.jpg"))
 	elif gender.lower() == "male":
-		imgName = choice(glob.glob("images/people/male_*.jpg"))
+		imgName = choice(glob.glob(getcwd() + "\\randominfo\\images\\people\\male_*.jpg"))
 	else:
 		return ValueError("Invalid gender. It must be male or female.")
 	return imgName
 
+startRange = datetime(1970, 1, 1, 0, 0, 0, 0, pytz.UTC)
+endRange = datetime.today()
 
-class Date_Time:
-	def __init__(self, _format = "%d-%m-%Y %H:%M:%S", startRange = datetime(1970, 1, 1, 0, 0, 0, 0, pytz.UTC), endRange = datetime.today()):
-		self._format = _format
-		self.startRange = startRange
-		self.endRange = endRange
+def get_today(_format = "%d-%m-%Y %H:%M:%S"):
+	return datetime.today().strftime(_format)
+
+def get_date(tstamp = None, _format = "%d %b, %Y"):
+	if tstamp == None:
 		startTs = startRange.timestamp()
 		endTs = datetime.timestamp(endRange)
-		self.datetime = datetime.fromtimestamp(randrange(int(startTs), int(endTs)))
-	
-	def set_startRange(self, startRange):
-		self.startRange = startRange
-	
-	def get_startRange(self):
-		return self.startRange
-	
-	def set_endRange(self, endRange):
-		self.endRange = endRange
-	
-	def get_endRange(self, endRange):
-		return self.endRange
+		tstamp = datetime.fromtimestamp(randrange(int(startTs), int(endTs)))
+	return datetime.fromtimestamp(int(tstamp)).strftime(_format)
 
-	def set_format(self, _format):
-		self._format = _format
+def get_time(tstamp = None, _format = "%H:%M:%S"):
+	if tstamp == None:
+		startTs = startRange.timestamp()
+		endTs = datetime.timestamp(endRange)
+		tstamp = datetime.fromtimestamp(randrange(int(startTs), int(endTs)))
+	return datetime.fromtimestamp(int(tstamp)).strftime(_format)
 
-	def get_format(self):
-		return self._format
+def get_datetime(tstamp = None, _format = "%d-%m-%Y %H:%M:%S"):
+	if tstamp == None:
+		startTs = startRange.timestamp()
+		endTs = datetime.timestamp(endRange)
+		tstamp = datetime.fromtimestamp(randrange(int(startTs), int(endTs)))
+	return datetime.fromtimestamp(int(tstamp)).strftime(_format)
 
-	def get_today(self):
-		return datetime.today().strftime(self._format)
-	
-	def get_date(self, _format = "%d %b, %Y"):
-		return self.datetime.strftime(_format)
+def get_year_diff(start_year, end_year = datetime.now().year):
+	return int(end_year) - int(start_year)
 
-	def get_time(self, _format = "%H:%M:%S"):
-		return self.datetime.strftime(_format)
-
-	def get_datetime(self):
-		return self.datetime
-
-	def get_year_diff(self, year = datetime.now().year):
-		return year - self.datetime.year
+def test():
+	print(getcwd())
 
 class Person:
 	def __init__(self, gender = None, country = None):
 		self.first_name = get_first_name()
 		self.last_name = get_last_name()
 		self.full_name = self.first_name + " " + self.last_name
-		dob = Date_Time()
+		dob = get_datetime("%")
 		self.birthdate = dob.get_date()
 		self.phone = get_phone_number()
 		self.email = get_email()
 		self.gender = gender
 		self.country = country
 		self.paswd = random_password()
+		self.image = get_face_profile_img()
 
 	def get_full_name(self):
 		return self.full_name
@@ -250,18 +239,22 @@ class Person:
 	
 	def get_country(self):
 		return self.country
+	
+	def get_profile_image(self):
+		return self.image
 
-	def get_all(self):
-		return [
-			self.first_name,
-			self.last_name,
-			self.birthdate,
-			self.gender,
-			self.email,
-			self.phone,
-			self.paswd,
-			self.country
-		]
+	def get_details(self):
+		return {
+			"first_name": self.first_name,
+			"last_name": self.last_name,
+			"birthdate": self.birthdate,
+			"gender": self.gender,
+			"email": self.email,
+			"phone": self.phone,
+			"paswd": self.paswd,
+			"country": self.country,
+			"image": self.image
+		}
 
 
 '''

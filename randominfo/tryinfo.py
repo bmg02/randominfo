@@ -1,55 +1,72 @@
-import random, csv
-from os.path import abspath, join, dirname
-from .Date_Time import Date_Time
-from . import get_email as getEmail, random_password, get_phone_number as getPhone, get_full_name as getFullName, get_last_name as getLName, get_first_name as getFName
+from selenium import webdriver
+import time
+import csv
 
-full_path = lambda filename: abspath(join(dirname(__file__), filename))
+with open('areas.csv', 'r') as f:
+	reader = csv.reader(f.read().splitlines(), delimiter = ',')
+	data = [row for row in reader]
 
-class Person:
-	def __init__(self, gender = None, country = None):
-		self.first_name = getFName()
-		self.last_name = getLName()
-		self.full_name = self.first_name + " " + self.last_name
-		dob = Date_Time()
-		self.birthdate = dob.get_date()
-		self.phone = getPhone()
-		self.email = getEmail()
-		self.gender = gender
-		self.country = country
-		self.paswd = random_password()
+#print(data[1][0])
+##############
+filename = 'areas1'
+############
 
-	def get_full_name(self):
-		return self.full_name
+#driver = webdriver.Chrome('/usr/local/bin/chromedriver')  # Optional argument, if not specified will search path.
+driver = webdriver.Firefox(executable_path=r'C:\\Users\\bhuvan_02\\Desktop\\geckodriver.exe')
+driver.get('http://www.latlong.net/')
 
-	def get_first_name(self):
-	    return self.first_name
+crash = 1
+results = []
+skipped = []
+for i,row in enumerate(data[1:]):
+	print (i)
+	search = driver.find_element_by_id('place')
+	search_term = row[0] + ", " + row[1] + ", " + row[2]
+	search.clear()
+	try:
+		search.send_keys(search_term)
+	except:
+		print ('Skiped %s' %search_term)
+		print (row)
+		skipped.append(row)
+		continue
 
-	def get_last_name(self):
-	    return self.last_name
-	
-	def get_gender(self):
-		return self.gender
-	
-	def get_birthdate(self):
-		return self.birthdate
-	
-	def get_email(self):
-		return self.email
-	
-	def get_password(self):
-		return self.paswd
-	
-	def get_country(self):
-		return self.country
+	search.submit()
+	time.sleep(1)
+	try:
+		lat = driver.find_element_by_id('latlngspan')
+	except:
+		alert = driver.switch_to_alert()
+		alert.accept()
+		driver.switch_to_default_content()
+		print ('Couldnt find %s' %search_term)
+		print (row)
+		skipped.append(row)
+		continue
 
-	def get_all(self):
-		return [
-			self.first_name,
-			self.last_name,
-			self.birthdate,
-			self.gender,
-			self.email,
-			self.phone,
-			self.paswd,
-			self.country
-		]
+	lat_long = lat.text.strip('() ').split(',')
+	lat_long_clean = [float(n) for n in lat_long]
+
+	try:
+		driver.navigate().refresh()
+	except:
+		#with open(filename + 'recovered' + '%i' %crash + '.csv' , "wb") as f:
+			#writer = csv.writer(f)
+			#writer.writerows(results)
+		crash +=1
+
+	print (lat_long_clean)
+	r = row
+	r.extend(lat_long_clean)
+	r.insert(0, i)
+	print (r)
+	results.append(r)
+
+	#with open(filename + ".csv", "a") as f:
+		#writer = csv.writer(f)
+		#writer.writerow(r)
+
+print(results)
+#with open(filename + "complete.csv" , "wb") as f:
+	#writer = csv.writer(f)
+	#writer.writerows(results)
