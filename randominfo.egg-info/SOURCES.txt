@@ -1,8 +1,9 @@
-README.md
+README.rst
 randominfo
 setup.cfg
 setup.py
 randominfo/__init__.py
+randominfo/excep.py
 randominfo.egg-info/PKG-INFO
 randominfo.egg-info/SOURCES.txt
 randominfo.egg-info/dependency_links.txt
