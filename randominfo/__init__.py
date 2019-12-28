@@ -10,7 +10,7 @@ from excep import CustomError
 
 
 __title__ = 'randominfo'
-__version__ = '0.01'
+__version__ = '0.0.2'
 __author__ = 'Bhuvan Gandhi'
 __license__ = 'MIT'
 
