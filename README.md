@@ -75,13 +75,14 @@ This package provides dummy data like...
     * digits: True if we want to include digits in password.
 * Return value: Password as string.
 
-#### `get_alphabet_profile_img(char, bgColor = None, filePath = None, fileName = None)`: ####
+#### `get_alphabet_profile_img(char, filePath, imgName = None, charColor = None, bgColor = None)`: ####
 * Desc.: Generates image of specified character with background color and it stores on specified file path with given file name.
 * Arguments:
     * char: A character for writing in image.
-    * bgColor: Background color name.
     * filePath: A path where the image will store.
-    * fileName: A name of image file.
+    * imgName: A name of image file.
+    * charColor: Character color name.
+    * bgColor: Background color name.
 * Return value: A full path of stored image.
 
 #### `get_face_profile_img(filePath, gender = None)`: ####

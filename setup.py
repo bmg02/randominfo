@@ -6,15 +6,18 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name='randominfo',
-    version='1.0',
+    version='1.0.5',
     packages=['randominfo'],
     author="Bhuvan Gandhi",
     author_email="bhuvan12501@gmail.com",
     description="Random data generator for IDs, names, emails, passwords, dates, numbers, addresses, images, OTPs etc. for dummy entries.",
     long_description = long_description,
     long_description_content_type='text/markdown',
+    package_data={
+        'randominfo': ['data.csv', 'images/people/*.jpg']
+    },
     url="https://github.com/bmg02/randominfo",
-    download_url = 'https://github.com/bmg02/randominfo/dist/randominfo-1.0.tar.gz',
+    download_url = 'https://github.com/bmg02/randominfo/dist/randominfo-1.0.5.tar.gz',
     python_requires='>=3',
     install_requires = ["pillow>=5.4.1", "pytz>=2018.5"],
     classifiers=[

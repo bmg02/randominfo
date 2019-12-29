@@ -1,7 +1,7 @@
 from __future__ import unicode_literals
 import sys, glob, csv, pytz, shutil
 from os import listdir, getcwd
-from os.path import abspath, join, dirname, split, exists, isfile
+from os.path import abspath, join, dirname, split, exists, isfile, isdir
 sys.path.append("/randominfo/")
 from random import randint, choice, sample, randrange
 from datetime import datetime
@@ -9,7 +9,7 @@ from PIL import Image, ImageDraw, ImageFont
 
 
 __title__ = 'randominfo'
-__version__ = '1.0'
+__version__ = '1.0.5'
 __author__ = 'Bhuvan Gandhi'
 __license__ = 'MIT'
 
@@ -132,37 +132,42 @@ def get_phone_number(country_code = True):
             phone += str(randint(0,9))
     return phone
 
-def get_alphabet_profile_img(char, bgColor = None, filePath = None, fileName = None):
-	if char.isalpha():
+def get_alphabet_profile_img(char, filePath, imgName = None, charColor = None, bgColor = None):
+	if char.isalpha() and isdir(filePath):
+		if charColor != None:
+			if not charColor.isalpha():
+				raise CustomError("Character color must be a name of color.")
+		if bgColor != None:
+			if not bgColor.isalpha():
+				raise CustomError("Background color must be a name of color.")
+		if imgName != None:
+			if not imgName.isalpha():
+				raise CustomError("Image name must be a str.")
 		char = char[:1].upper()
 		if bgColor == None:
-			colors = ['red', 'green', 'royalblue', 'violet', 'pink', 'indigo', 'grey', 'yellowgreen']
+			colors = ['red', 'green', 'royalblue', 'violet', 'pink', 'indigo', 'grey', 'yellowgreen', 'teal']
 			bgColor = choice(colors)
+		if charColor == None:
+			charColor = (40, 40, 40)
 		img = Image.new('RGB', (512, 512), color = bgColor)
 		d = ImageDraw.Draw(img)
 		font = ImageFont.truetype("Candara.ttf", 280)
-		d.text((170,140), char, fill=(255,255,255), font = font)
-		if filePath == None:
-			filePath = dirname(abspath(__file__))
-		else:
-			if not exists(filePath):
-				raise OSError("File path is not exists.")
-		if fileName == None:
-			fileName = char + "_" + datetime.now().strftime("%Y-%m-%d %H:%M:%S").replace(':', '-')
-		imgName = str(filePath) + "\\" + str(fileName) + '.png'
-		img.save(imgName)
-		
+		d.text((170,140), char, fill=charColor, font = font)
+		if imgName == None:
+			imgName = char + "_" + datetime.now().strftime("%Y-%m-%d %H:%M:%S").replace(':', '-')
+		filePath = filePath + "\\" + imgName + ".jpg"
+		img.save(filePath)
 	else:
-		raise ValueError("Specify valid alphabet character in argument.")
-	return imgName
+		raise CustomError("Type mismatch in either char or filePath or charColor or bgColor.")
+	return filePath
 
 def get_face_profile_img(filePath, gender = None):
 	if gender == None:
-		imgName = choice(glob.glob(getcwd() + "\\randominfo\\images\\people\\*.jpg"))
+		imgName = choice(glob.glob(getcwd() + "\\images\\people\\*.jpg"))
 	elif gender.lower() == "female":
-		imgName = choice(glob.glob(getcwd() + "\\randominfo\\images\\people\\female_*.jpg"))
+		imgName = choice(glob.glob(getcwd() + "\\images\\people\\female_*.jpg"))
 	elif gender.lower() == "male":
-		imgName = choice(glob.glob(getcwd() + "\\randominfo\\images\\people\\male_*.jpg"))
+		imgName = choice(glob.glob(getcwd() + "\\images\\people\\male_*.jpg"))
 	else:
 		return ValueError("Invalid gender. It must be male or female.")
 	return shutil.copyfile(imgName, filePath)
