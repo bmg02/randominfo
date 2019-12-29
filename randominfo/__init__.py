@@ -9,7 +9,7 @@ from PIL import Image, ImageDraw, ImageFont
 
 
 __title__ = 'randominfo'
-__version__ = '0.0.5'
+__version__ = '1.0'
 __author__ = 'Bhuvan Gandhi'
 __license__ = 'MIT'
 
@@ -43,7 +43,7 @@ def get_first_name(gender = None):
 		else:
 			raise CustomError("Enter gender male or female.")
 	selectedData = choice(filteredData)
-	return [selectedData[0], selectedData[2]]
+	return [selectedData[0], selectedData[1], selectedData[2]]
 
 def get_last_name():
 	lastNameFile = csv.reader(open(full_path('data.csv'), 'r'))
@@ -72,8 +72,8 @@ def get_otp(len, onlyDigits = True, onlyAlpha = True, lowercase = True, uppercas
 		otp += str(chars[randint(0, len(chars) - 1)])
 	return otp
 
-def get_formatted_datetime(strDate, _format = "%d-%m-%Y %H:%M:%S"):
-    return datetime.strptime(strDate, _format)
+def get_formatted_datetime(outFormat, strDate, strFormat = "%d-%m-%Y %H:%M:%S"):
+    return datetime.strptime(strDate, strFormat).strftime(outFormat)
 
 def get_email(Person = None):
 	domains = ["gmail", "yahoo", "hotmail", "express", "yandex", "nexus", "online", "omega", "institute", "finance", "company", "corporation", "community"]
@@ -85,15 +85,15 @@ def get_email(Person = None):
 		prsn = Person
 	
 	c = randint(0,2)
-	dmn = choice(domains)
+	dmn = '@' + choice(domains)
 	ext = choice(extentions)
 	
 	if c == 0:
-		email = prsn.first_name + get_formatted_datetime(prsn.birthdate(), "%Y") + dmn + "." + ext
+		email = prsn.first_name + get_formatted_datetime("%Y", prsn.birthdate, "%d %b, %Y") + dmn + "." + ext
 	elif c == 1:
-		email = prsn.last_name + get_formatted_datetime(prsn.birthdate(), "%d") + dmn + "." + ext
+		email = prsn.last_name + get_formatted_datetime("%d", prsn.birthdate, "%d %b, %Y") + dmn + "." + ext
 	else:
-		email = prsn.first_name + get_formatted_datetime(prsn.birthdate(), "%y") + dmn + "." + ext
+		email = prsn.first_name + get_formatted_datetime("%y", prsn.birthdate, "%d %b, %Y") + dmn + "." + ext
 	
 	return email
 
@@ -143,14 +143,15 @@ def get_alphabet_profile_img(char, bgColor = None, filePath = None, fileName = N
 		font = ImageFont.truetype("Candara.ttf", 280)
 		d.text((170,140), char, fill=(255,255,255), font = font)
 		if filePath == None:
-			filePath = dirname(abspath(__file__)).replace('\\', '\\\\')
+			filePath = dirname(abspath(__file__))
 		else:
 			if not exists(filePath):
-				raise OSError("File is already exists there.")
-		
+				raise OSError("File path is not exists.")
 		if fileName == None:
-			fileName = char + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S").replace(':', '-')
+			fileName = char + "_" + datetime.now().strftime("%Y-%m-%d %H:%M:%S").replace(':', '-')
 		imgName = str(filePath) + "\\" + str(fileName) + '.png'
+		img.save(imgName)
+		
 	else:
 		raise ValueError("Specify valid alphabet character in argument.")
 	return imgName
@@ -185,6 +186,8 @@ def get_date(tstamp = None, _format = "%d %b, %Y"):
 			return datetime.fromtimestamp(int(tstamp)).strftime(_format)
 
 def get_birthdate(startAge = None, endAge = None, _format = "%d %b, %Y"):
+	startRange = datetime(1970, 1, 1, 0, 0, 0, 0, pytz.UTC)
+	endRange = datetime.today()
 	if startAge != None:
 		if type(startAge).__name__ != 'int':
 			raise CustomError("Starting age value must be integer.")
@@ -197,7 +200,7 @@ def get_birthdate(startAge = None, endAge = None, _format = "%d %b, %Y"):
 		else:
 			startRange.year = endRange.year - startAge
 			endRange.year = endRange.year - endAge
-	if startAge != None or endAge != None: #If anyone is given in arg
+	elif startAge != None or endAge != None: #If anyone is given in arg
 		ageYear = startAge if startAge != None else endAge
 		startRange = datetime(endRange.year - ageYear, 1, 1, 0, 0, 0, 0, pytz.UTC)
 		endRange = datetime(endRange.year - ageYear, 12, 31, 0, 0, 0, 0, pytz.UTC)
@@ -205,14 +208,13 @@ def get_birthdate(startAge = None, endAge = None, _format = "%d %b, %Y"):
 		pass
 	startTs = startRange.timestamp()
 	endTs = datetime.timestamp(endRange)
-	tstamp = datetime.fromtimestamp(randrange(int(startTs), int(endTs)))
-	return datetime.fromtimestamp(int(tstamp)).strftime(_format)
+	return datetime.fromtimestamp(randrange(int(startTs), int(endTs))).strftime(_format)
 
 def get_address():
 	full_addr = []
 	addrParam = ['street', 'landmark', 'area', 'city', 'state', 'pincode']
 	for i in range(4,10):
-		addrFile = csv.reader(open('data.csv', 'r'))
+		addrFile = csv.reader(open(full_path('data.csv'), 'r'))
 		allAddrs = []
 		for addr in addrFile:
 			if addr[i] != '':
@@ -222,10 +224,11 @@ def get_address():
 	return full_addr
 
 def get_hobbies():
-	hobbiesFile = csv.reader(open(full_path('data/hobbies.csv'), 'r'))
+	hobbiesFile = csv.reader(open(full_path('data.csv'), 'r'))
 	allHobbies = []
 	for data in hobbiesFile:
-		allHobbies.append(data)
+		if data[3] != '':
+			allHobbies.append(data[3])
 	hobbies = []
 	for _ in range (1, randint(2,6)):
 		hobbies.append(choice(allHobbies))
@@ -239,47 +242,18 @@ class Person:
 		self.full_name = self.first_name + " " + self.last_name
 		self.birthdate = get_birthdate()
 		self.phone = get_phone_number()
-		self.email = get_email()
+		self.email = get_email(self)
 		self.gender = firstName[2]
 		self.country = firstName[1]
 		self.paswd = random_password()
 		self.hobbies = get_hobbies()
 		self.address = get_address()
-
-	def get_full_name(self):
-		return self.full_name
-
-	def get_first_name(self):
-	    return self.first_name
-
-	def get_last_name(self):
-	    return self.last_name
 	
-	def get_gender(self):
-		return self.gender
-	
-	def get_birthdate(self):
-		return self.birthdate
-	
-	def get_email(self):
-		return self.email
-	
-	def get_password(self):
-		return self.paswd
-	
-	def get_country(self):
-		return self.country
-	
-	def get_hobbies(self):
-		return self.hobbies
-	
-	def get_address(self):
-		return self.address
-
 	def get_details(self):
 		return {
 			"first_name": self.first_name,
 			"last_name": self.last_name,
+			"full_name": self.full_name,
 			"birthdate": self.birthdate,
 			"gender": self.gender,
 			"email": self.email,
@@ -289,7 +263,6 @@ class Person:
 			"hobbies": self.hobbies,
 			"address": self.address
 		}
-
 
 '''
 REFERENCE:

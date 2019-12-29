@@ -1,6 +1,10 @@
 # Randominfo #
 Random data generator for IDs, names, emails, passwords, dates, numbers, addresses, images, OTPs etc. This package includes data like names and addresses regarding Indian regions.
 
+## Installation ##
+To install package from python-pip...
+`$ pip install randominfo`
+
 ## Features ##
 This package provides dummy data like...
 
@@ -49,12 +53,13 @@ This package provides dummy data like...
     * uppercase: Allow only uppercase alphabets in random string.
 * Return value: String value.
 
-#### `get_formatted_datetime(strDate, _format = "%d-%m-%Y %H:%M:%S")`: ####
+#### `get_formatted_datetime(outFormat, strDate, strFormat = "%d-%m-%Y %H:%M:%S")`: ####
 * Desc.: Convert string date into datetime object in specified format.
 * Arguments:
+	* outFormat: A format in which we want output.
     * strDate: A date which we want to convert.
-    * _format: Converted date format.
-* Return value: Datetime object.
+    * _format: A date format of which we have specified in strDate argument.
+* Return value: Datetime object in specified format.
 
 #### `get_email(Person = None)`: ####
 * Desc.: Random email generator.
@@ -88,7 +93,7 @@ This package provides dummy data like...
 #### `get_today(_format = "%d-%m-%Y %H:%M:%S")`: ####
 * Desc.: Generates today's datetime in specified format.
 * Arguments:
-    * _ format: A format for generating today's datetime.
+    * _format: A format for generating today's datetime.
 * Return value: String value.
 
 #### `get_datetime(tstamp = None, _format = '%d %b, %Y')`: ####
@@ -109,19 +114,20 @@ This package provides dummy data like...
 ## Objects ##
 #### `Person()`: ####
 * Desc.: An object which holds information related to a person. Information like first name, last name, gender, birthdate, phone number, email address, password, country, hobbies and address.
+* Variables:
+    * `Person.first_name`: Returns the first name of a person.
+    * `Person.last_name`: Returns the last name of a person.
+	* `Person.full_name`: Returns the full name of a person.
+    * `Person.gender`: Returns the gender of a person.
+    * `Person.birthdate`: Returns the birthdate of a person.
+    * `Person.phone`: Returns the phone number of a person.
+    * `Person.email`: Returns the email address of a person.
+    * `Person.password`: Returns the password of a person.
+    * `Person.country`: Returns the country of a person.
+    * `Person.hobbies`: Returns the hobbies of a person.
+    * `Person.address`: Returns the address of a person.
 * Functions:
-    * `Person.get_full_name()`: Returns the full name of a person.
-    * `Person.get_first_name()`: Returns the first name of a person.
-    * `Person.get_last_name()`: Returns the last name of a person.
-    * `Person.get_gender()`: Returns the gender of a person.
-    * `Person.get_birthdate()`: Returns the birthdate of a person.
-    * `Person.get_phone()`: Returns the phone number of a person.
-    * `Person.get_email()`: Returns the email address of a person.
-    * `Person.get_password()`: Returns the password of a person.
-    * `Person.get_country()`: Returns the country of a person.
-    * `Person.get_hobbies()`: Returns the hobbies of a person.
-    * `Person.get_address()`: Returns the address of a person.
-    * `Person.get_details()`: Returns the all details of a person.
+    * `Person.get_details()`: Returns all the details of a person.
 
 ## Reference ##
 http://www.first-names-meanings.com/country-indian-names.html
