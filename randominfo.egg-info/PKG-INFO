@@ -1,12 +1,12 @@
 Metadata-Version: 2.1
 Name: randominfo
-Version: 0.0.2
+Version: 0.0.3
 Summary: Random data generator for IDs, names, emails, passwords, dates, numbers, addresses, images, OTPs etc. for dummy entries.
 Home-page: https://github.com/bmg02/randominfo
 Author: Bhuvan Gandhi
 Author-email: bhuvan12501@gmail.com
 License: UNKNOWN
-Download-URL: https://github.com/bmg02/randominfo/dist/randominfo-0.1.tar.gz
+Download-URL: https://github.com/bmg02/randominfo/dist/randominfo-0.0.3.tar.gz
 Description: ####
         Randominfo
         ####

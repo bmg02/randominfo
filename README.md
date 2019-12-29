@@ -1,11 +1,7 @@
-####
-Randominfo
-####
+# Randominfo #
 Random data generator for IDs, names, emails, passwords, dates, numbers, addresses, images, OTPs etc. This package includes data like names and addresses regarding Indian regions.
 
-****
-Features
-****
+## Features ##
 This package provides dummy data like...
 
 * **Name**: First name, last name and full name.
@@ -21,17 +17,11 @@ This package provides dummy data like...
 * **OTPs**: OTP generation with different types like only digits, only alphabets or digits and alphabets both.
 * **Other**: random int or float number generation based on specific range or any value.
 
-****
-Functions
-****
+## Functions ##
 Coming soon...
 
-****
-Objects
-****
+## Objects ##
 Coming soon...
 
-****
-Reference
-****
+## Reference ##
 Coming soon...
