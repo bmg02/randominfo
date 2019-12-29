@@ -1,20 +1,27 @@
 from __future__ import unicode_literals
-import sys, glob, csv, pytz
+import sys, glob, csv, pytz, shutil
 from os import listdir, getcwd
-from os.path import abspath, join, dirname, split, exists
+from os.path import abspath, join, dirname, split, exists, isfile
 sys.path.append("/randominfo/")
 from random import randint, choice, sample, randrange
 from datetime import datetime
 from PIL import Image, ImageDraw, ImageFont
-from excep import CustomError
 
 
 __title__ = 'randominfo'
-__version__ = '0.0.3'
+__version__ = '0.0.4'
 __author__ = 'Bhuvan Gandhi'
 __license__ = 'MIT'
 
 full_path = lambda filename: abspath(join(dirname(__file__), filename))
+
+class CustomError(Exception):
+    def __init__(self, err):
+        self.err = err
+        pass
+    def __str__(self):
+        return self.err
+
 def get_first_name(gender = None):
 	firstNameFile = csv.reader(open(full_path('data.csv'), 'r'))
 	filteredData = []
@@ -49,37 +56,18 @@ def get_last_name():
 def get_full_name(gender = None):
 	return get_first_name(gender)[0] + " " + get_last_name()
 
-def get_digit_otp(len):
-    otp = ""
-    for _ in range(len):
-        otp += str(randint(1,9))
-    return otp
-
-def get_chars_otp(len, lowerCase = True, upperCase = True):
-    otp = ""
-    chars = ""
-    if lowerCase == True:
-        if upperCase == True:
-            chars = "QWERTYUIOPLKJHGFDSAZXCVBNMqwertyuioplkjhgfdsazxcvbnm"
-        else:
-            chars = "qwertyuioplkjhgfdsazxcvbnm"
-    else:
-        if upperCase == True:
-            chars = "QWERTYUIOPLKJHGFDSAZXCVBNM"
-        else:
-            return "Invalid combination."
-    for _ in range(len):
-        otp += str(chars[randint(0, len(chars) - 1)])
-    return otp
-
-def get_otp(len, onlyDigits = False, onlyAlpha = False):
-	alphas = "QWERTYUIOPLKJHGFDSAZXCVBNMqwertyuioplkjhgfdsazxcvbnm"
+def get_otp(len, onlyDigits = True, onlyAlpha = True, lowercase = True, uppercase = True):
+	lwrChars = "qwertyuioplkjhgfdsazxcvbnm"
+	uprChars = "QWERTYUIOPLKJHGFDSAZXCVBNM"
 	digs = "0123456789"
 	chars = ""
 	if onlyDigits == True:
-		chars = digs
+		chars += digs
 	if onlyAlpha == True:
-		chars = alphas
+		if lwrChars == True:
+			chars += lwrChars
+		if uprChars == True:
+			chars += uprChars
 	for _ in range(len):
 		otp += str(chars[randint(0, len(chars) - 1)])
 	return otp
@@ -167,7 +155,7 @@ def get_alphabet_profile_img(char, bgColor = None, filePath = None, fileName = N
 		raise ValueError("Specify valid alphabet character in argument.")
 	return imgName
 
-def get_face_profile_img(gender = None):
+def get_face_profile_img(filePath, gender = None):
 	if gender == None:
 		imgName = choice(glob.glob(getcwd() + "\\randominfo\\images\\people\\*.jpg"))
 	elif gender.lower() == "female":
@@ -176,7 +164,7 @@ def get_face_profile_img(gender = None):
 		imgName = choice(glob.glob(getcwd() + "\\randominfo\\images\\people\\male_*.jpg"))
 	else:
 		return ValueError("Invalid gender. It must be male or female.")
-	return imgName
+	return shutil.copyfile(imgName, filePath)
 
 startRange = datetime(1970, 1, 1, 0, 0, 0, 0, pytz.UTC)
 endRange = datetime.today()
@@ -184,41 +172,41 @@ endRange = datetime.today()
 def get_today(_format = "%d-%m-%Y %H:%M:%S"):
 	return datetime.today().strftime(_format)
 
-def get_date(tstamp = None, _format = "%d %b, %Y", startAge = None, endAge = None):
-	if startAge != None or endAge != None:
-		if startAge < endAge:
-			if type(startAge).__name__ == 'int':
-				startRange = endRange.year - startAge
-			else:
-				raise CustomError("Only integer is acceptable in ending age.")
-			if type(endAge).__name__ == 'int':
-				startRange = endRange.year - endAge
-			else:
-				raise CustomError("Only integer is acceptable in ending age.")
+def get_date(tstamp = None, _format = "%d %b, %Y"):
+	if tstamp == None:
+		startTs = startRange.timestamp()
+		endTs = datetime.timestamp(endRange)
+		tstamp = datetime.fromtimestamp(randrange(int(startTs), int(endTs)))
+		return datetime.fromtimestamp(int(tstamp)).strftime(_format)
+	else:
+		if type(tstamp).__name__ != 'int':
+			raise CustomError("Timestamp must be an integer.")
 		else:
+			return datetime.fromtimestamp(int(tstamp)).strftime(_format)
+
+def get_birthdate(startAge = None, endAge = None, _format = "%d %b, %Y"):
+	if startAge != None:
+		if type(startAge).__name__ != 'int':
+			raise CustomError("Starting age value must be integer.")
+	if endAge != None:
+		if type(endAge).__name__ != 'int':
+			raise CustomError("Ending age value must be integer.")
+	if startAge != None and endAge != None: #If both are given in arg
+		if startAge >= endAge:
 			raise CustomError("Starting age must be less than ending age.")
-	if tstamp == None:
-		startTs = startRange.timestamp()
-		endTs = datetime.timestamp(endRange)
-		tstamp = datetime.fromtimestamp(randrange(int(startTs), int(endTs)))
+		else:
+			startRange.year = endRange.year - startAge
+			endRange.year = endRange.year - endAge
+	if startAge != None or endAge != None: #If anyone is given in arg
+		ageYear = startAge if startAge != None else endAge
+		startRange = datetime(endRange.year - ageYear, 1, 1, 0, 0, 0, 0, pytz.UTC)
+		endRange = datetime(endRange.year - ageYear, 12, 31, 0, 0, 0, 0, pytz.UTC)
+	else:
+		pass
+	startTs = startRange.timestamp()
+	endTs = datetime.timestamp(endRange)
+	tstamp = datetime.fromtimestamp(randrange(int(startTs), int(endTs)))
 	return datetime.fromtimestamp(int(tstamp)).strftime(_format)
-
-def get_time(tstamp = None, _format = "%H:%M:%S"):
-	if tstamp == None:
-		startTs = startRange.timestamp()
-		endTs = datetime.timestamp(endRange)
-		tstamp = datetime.fromtimestamp(randrange(int(startTs), int(endTs)))
-	return datetime.fromtimestamp(int(tstamp)).strftime(_format)
-
-def get_datetime(tstamp = None, _format = "%d-%m-%Y %H:%M:%S"):
-	if tstamp == None:
-		startTs = startRange.timestamp()
-		endTs = datetime.timestamp(endRange)
-		tstamp = datetime.fromtimestamp(randrange(int(startTs), int(endTs)))
-	return datetime.fromtimestamp(int(tstamp)).strftime(_format)
-
-def get_year_diff(start_year, end_year = datetime.now().year):
-	return int(end_year) - int(start_year)
 
 def get_address():
 	full_addr = []
@@ -232,7 +220,6 @@ def get_address():
 		full_addr.append(choice(allAddrs))
 	full_addr = dict(zip(addrParam, full_addr))
 	return full_addr
-	
 
 def get_hobbies():
 	hobbiesFile = csv.reader(open(full_path('data/hobbies.csv'), 'r'))
@@ -250,7 +237,7 @@ class Person:
 		self.first_name = firstName[0]
 		self.last_name = get_last_name()
 		self.full_name = self.first_name + " " + self.last_name
-		self.birthdate = get_date()
+		self.birthdate = get_birthdate()
 		self.phone = get_phone_number()
 		self.email = get_email()
 		self.gender = firstName[2]
@@ -258,7 +245,6 @@ class Person:
 		self.paswd = random_password()
 		self.hobbies = get_hobbies()
 		self.address = get_address()
-		self.image = get_face_profile_img()
 
 	def get_full_name(self):
 		return self.full_name
@@ -284,9 +270,6 @@ class Person:
 	def get_country(self):
 		return self.country
 	
-	def get_profile_image(self):
-		return self.image
-	
 	def get_hobbies(self):
 		return self.hobbies
 	
@@ -304,8 +287,7 @@ class Person:
 			"paswd": self.paswd,
 			"country": self.country,
 			"hobbies": self.hobbies,
-			"address": self.address,
-			"image": self.image
+			"address": self.address
 		}
 
 

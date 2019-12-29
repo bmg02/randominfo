@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name='randominfo',
-    version='0.0.3',
+    version='0.0.4',
     scripts=['randominfo'] ,
     author="Bhuvan Gandhi",
     author_email="bhuvan12501@gmail.com",
@@ -14,9 +14,9 @@ setuptools.setup(
     long_description = long_description,
     long_description_content_type='text/markdown',
     url="https://github.com/bmg02/randominfo",
-    download_url = 'https://github.com/bmg02/randominfo/dist/randominfo-0.0.3.tar.gz',
+    download_url = 'https://github.com/bmg02/randominfo/dist/randominfo-0.0.4.tar.gz',
     packages=setuptools.find_packages(),
-    install_requires = ["PIL", "csv", "pytz", "glob"],
+    install_requires = ["pillow>=5.4.1", "pytz>=2018.5"],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
