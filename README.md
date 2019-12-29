@@ -23,9 +23,9 @@ This package provides dummy data like...
 
 ## Functions ##
 #### `get_first_name(gender = None)`: ####
-* Desc.: Returns the first name and the gender.
-* Argument value: gender = 'male' or 'female'.
-* Return value: [firstname, gender] | Type: List.
+* **Desc.:** Returns the first name and the gender.
+* **Argument value:** gender = 'male' or 'female'.
+* **Return value:** [firstname, gender] | Type: List.
 
 #### `get_last_name()`: ####
 * Desc.: Returns the last name.
@@ -127,7 +127,7 @@ This package provides dummy data like...
     * `Person.hobbies`: Returns the hobbies of a person.
     * `Person.address`: Returns the address of a person.
 * Functions:
-    * `Person.get_details()`: Returns all the details of a person.
+    * `Person.get_details()`: Returns all the details of a person. Type: Dictionary.
 
 ## Reference ##
 http://www.first-names-meanings.com/country-indian-names.html
