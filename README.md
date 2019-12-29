@@ -3,6 +3,7 @@ Random data generator for IDs, names, emails, passwords, dates, numbers, address
 
 ## Installation ##
 To install package from python-pip...
+
 `$ pip install randominfo`
 
 ## Features ##
