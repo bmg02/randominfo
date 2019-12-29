@@ -9,7 +9,7 @@ from PIL import Image, ImageDraw, ImageFont
 
 
 __title__ = 'randominfo'
-__version__ = '1.0.5'
+__version__ = '1.0.6'
 __author__ = 'Bhuvan Gandhi'
 __license__ = 'MIT'
 
