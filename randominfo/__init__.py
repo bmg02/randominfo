@@ -9,7 +9,7 @@ from PIL import Image, ImageDraw, ImageFont
 
 
 __title__ = 'randominfo'
-__version__ = '1.0.8'
+__version__ = '1.0.9.1'
 __author__ = 'Bhuvan Gandhi'
 __license__ = 'MIT'
 
@@ -162,12 +162,13 @@ def get_alphabet_profile_img(char, filePath, imgName = None, charColor = None, b
 	return filePath
 
 def get_face_profile_img(filePath, gender = None):
+	print(abspath(__file__))
 	if gender == None:
-		imgName = choice(glob.glob("\\images\\people\\*.jpg"))
+		imgName = choice(glob.glob(getcwd() + "\\images\\people\\*.jpg"))
 	elif gender.lower() == "female":
-		imgName = choice(glob.glob("\\images\\people\\female_*.jpg"))
+		imgName = choice(glob.glob(getcwd() + "\\images\\people\\female_*.jpg"))
 	elif gender.lower() == "male":
-		imgName = choice(glob.glob("\\images\\people\\male_*.jpg"))
+		imgName = choice(glob.glob(getcwd() + "\\images\\people\\male_*.jpg"))
 	else:
 		return ValueError("Invalid gender. It must be male or female.")
 	return shutil.copyfile(imgName, filePath)
