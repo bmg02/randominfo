@@ -10,11 +10,28 @@ from math import ceil
 
 
 __title__ = 'randominfo'
-__version__ = '2.0.1'
+__version__ = '2.0.2'
 __author__ = 'Bhuvan Gandhi'
 __license__ = 'MIT'
 
 full_path = lambda filename: abspath(join(dirname(__file__), filename))
+
+def get_id(length = 6, seq_number = None, step = 1, prefix = None, postfix = None):
+	generated_id = ""
+	if seq_number == None:
+		for _ in range(length):
+			generated_id += str(randint(0,9))
+	else:
+		if type(seq_number).__name__ != 'int' or type(step).__name__ != 'int':
+			raise TypeError("Sequence number must be an integer.")
+		else:
+			generated_id = str(seq_number + step)
+	if prefix != None:
+		prefix += generated_id
+		generated_id = prefix
+	if postfix != None:
+		generated_id += postfix
+	return generated_id
 
 def get_first_name(gender = None):
 	firstNameFile = csv.reader(open(full_path('data.csv'), 'r'))
