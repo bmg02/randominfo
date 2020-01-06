@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name='randominfo',
-    version='2.0',
+    version='2.0.1',
     packages=['randominfo'],
     author="Bhuvan Gandhi",
     author_email="bhuvan12501@gmail.com",
@@ -17,7 +17,7 @@ setuptools.setup(
         'randominfo': ['data.csv', 'images/people/*.jpg']
     },
     url="https://github.com/bmg02/randominfo",
-    download_url = 'https://github.com/bmg02/randominfo/dist/randominfo-2.0.tar.gz',
+    download_url = 'https://github.com/bmg02/randominfo/dist/randominfo-2.0.1.tar.gz',
     python_requires='>=3',
     install_requires = ["pillow>=5.4.1", "pytz>=2018.5"],
     classifiers=[

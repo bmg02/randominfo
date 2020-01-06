@@ -24,9 +24,9 @@ This package provides dummy data like...
 
 ## Functions ##
 #### `get_first_name(gender = None)`: ####
-* **Desc.:** Returns the first name and the gender.
-* **Argument value:** gender = 'male' or 'female'.
-* **Return value:** [firstname, gender] | Type: List.
+* Desc.: Returns the first name and the gender.
+* Argument value: gender = 'male' or 'female'.
+* Return value: String value.
 
 #### `get_last_name()`: ####
 * Desc.: Returns the last name.
@@ -37,6 +37,16 @@ This package provides dummy data like...
 * Arguments: gender = 'male' or 'female'.
 * Return value: String value (Combined first name and last name).
 
+#### `get_gender(first_name)`: ####
+* Desc.: Returns the gender from the first name.
+* Arguments: first_name for selecting gender based on first name.
+* Return value: String value - 'male' or 'female'.
+
+#### `get_country(first_name = None)`: ####
+* Desc.: Returns the country from the first name.
+* Arguments: first_name for selecting country based on first name. If first name is not specified then it will return random country name.
+* Return value: String value.
+
 #### `get_birthdate(startAge = None, endAge = None, _format = '%d %b, %Y')`: ####
 * Desc.: Generates random date or the date specified between years from the starting age or ending age.
 * Arguments:
@@ -45,7 +55,7 @@ This package provides dummy data like...
     * _format: Specifies the format of the date.
 * Return value: Date as string.
 
-#### `get_otp(len, onlyDigits = True, onlyAlpha = True, lowercase = True, uppercase = True)`: ####
+#### `get_otp(length = 6, digit = True, alpha = True, lowercase = True, uppercase = True)`: ####
 * Desc.: Generates one time password or random value in specified length of characters.
 * Arguments:
     * onlyDigits: Allow only digits in random string.
@@ -75,7 +85,7 @@ This package provides dummy data like...
     * digits: True if we want to include digits in password.
 * Return value: Password as string.
 
-#### `get_alphabet_profile_img(char, filePath, imgName = None, charColor = None, bgColor = None)`: ####
+#### `get_alphabet_profile_img(char, filePath, imgName, charColor = None, bgColor = None)`: ####
 * Desc.: Generates image of specified character with background color and it stores on specified file path with given file name.
 * Arguments:
     * char: A character for writing in image.
@@ -85,7 +95,7 @@ This package provides dummy data like...
     * bgColor: Background color name.
 * Return value: A full path of stored image.
 
-#### `get_face_profile_img(filePath, gender = None)`: ####
+#### `get_face_profile_img(filePath, imgName, gender = None)`: ####
 * Desc.: Generates random person's image.
 * Arguments:
     * filePath: A full path from root to file name. Specifies where to store image.
@@ -128,7 +138,19 @@ This package provides dummy data like...
     * `Person.country`: Returns the country of a person.
     * `Person.hobbies`: Returns the hobbies of a person.
     * `Person.address`: Returns the address of a person.
+    * `Person.custom_attr`: Returns the list of custom attributes specified for a person.
 * Functions:
+    * `Person.set_attr(attr_name, value = None)`:
+        * Desc.: Set the custom attribute of a person.
+        * Arguments.:
+            * attr_name: Attribute name for a person.
+            * value: Value for specified attribute.
+        * Return value: Attribute `attr_name` is added.
+    * `Person.get_attr(attr_name)`:
+        * Desc.: Returns the value of attribute specified for a person.
+        * Arguments.:
+            * attr_name: Attribute name of a person.
+        * Return value: Attribute value as string.
     * `Person.get_details()`: Returns all the details of a person. Type: Dictionary.
 
 ## Reference ##
