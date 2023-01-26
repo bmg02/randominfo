@@ -264,8 +264,11 @@ def get_address():
 		addrFile = csv.reader(open(full_path('data.csv'), 'r'))
 		allAddrs = []
 		for addr in addrFile:
-			if addr[i] != '':
-				allAddrs.append(addr[i])
+			try:
+				if addr[i] != '':
+					allAddrs.append(addr[i])
+			except:
+				pass
 		full_addr.append(choice(allAddrs))
 	full_addr = dict(zip(addrParam, full_addr))
 	return full_addr
