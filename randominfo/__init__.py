@@ -258,20 +258,33 @@ def get_birthdate(startAge = None, endAge = None, _format = "%d %b, %Y"):
 	return datetime.fromtimestamp(randrange(int(endTs), int(startTs))).strftime(_format)
 
 def get_address():
-	full_addr = []
-	addrParam = ['street', 'landmark', 'area', 'city', 'state', 'country', 'pincode']
-	for i in range(5,12):
-		addrFile = csv.reader(open(full_path('data.csv'), 'r'))
-		allAddrs = []
-		for addr in addrFile:
-			try:
-				if addr[i] != '':
-					allAddrs.append(addr[i])
-			except:
-				pass
-		full_addr.append(choice(allAddrs))
-	full_addr = dict(zip(addrParam, full_addr))
-	return full_addr
+    full_addr = {}
+    addrParam = ['street', 'landmark', 'area', 'city', 'state', 'country', 'pincode']
+    all_addresses = {param: [] for param in addrParam}
+    try:
+        with open(full_path('data.csv'), 'r') as csvfile:
+            addrFile = csv.reader(csvfile)
+            for addr in addrFile:
+                try:
+                    for i, param in enumerate(addrParam, start=5):
+                        if len(addr) > i and addr[i] != '':
+                            all_addresses[param].append(addr[i])
+                except IndexError:
+                    pass  # Пропускаємо рядки з меншою кількістю стовпців
+    except FileNotFoundError:
+        print(f"Помилка: Файл 'data.csv' не знайдено за шляхом: {full_path('data.csv')}")
+        return {param: "N/A" for param in addrParam} # Повертаємо значення за замовчуванням у випадку помилки
+
+    for param in addrParam:
+        if all_addresses[param]:
+            full_addr[param] = choice(all_addresses[param])
+        else:
+            full_addr[param] = "N/A" # Або інше значення за замовчуванням, якщо немає даних для цього параметра
+
+    return full_addr # Тут я вніс важливу зміну! Раніше ми намагалися вибрати випадкову адресу одразу після зчитування стовпця, і якщо стовпець виявлявся порожнім, виникала помилка.
+# Тепер я спочатку збираю всі можливі значення для кожного параметра адреси в окремі списки, а вже потім, якщо список не порожній, вибираю з нього випадкове значення.
+# Це гарантує, що ми не спробуємо вибрати елемент з порожнього списку і уникнемо помилки `IndexError`.
+# Якщо для якогось параметра в файлі `data.csv` немає даних, я встановлюю значення 'N/A'.
 
 def get_hobbies():
 	hobbiesFile = csv.reader(open(full_path('data.csv'), 'r'))
